@@ -19,6 +19,7 @@ function gauss_quad(f, ngp)
   return sum
 end
 
+
 # Approximates the Integral of a given function by the gaussian quadrature technic
 function double_gauss_quad(f, ngp)
 
@@ -36,6 +37,7 @@ function double_gauss_quad(f, ngp)
   return sum
 end
 
+
 # Phi function-vector
 phi = [
   (xi1, xi2) -> (1 - xi1) * (1 - xi2) * (1 / 4);
@@ -43,6 +45,7 @@ phi = [
   (xi1, xi2) -> (1 + xi1) * (1 + xi2) * (1 / 4);
   (xi1, xi2) -> (1 - xi1) * (1 + xi2) * (1 / 4)
 ]
+
 
 # Derivative of the phi function-vector
 d_xi_phi = [
@@ -56,11 +59,13 @@ d_xi_phi = [
    ((xi1, xi2) -> ( 1 / 4) * (1 - xi1))]
 ]
 
+
 # X function-vector
 x = [
   (xi1, xi2, Xs) -> dot(Xs, map((f) -> f(xi1, xi2), phi)),
   (xi1, xi2, Ys) -> dot(Ys, map((f) -> f(xi1, xi2), phi))
 ]
+
 
 # Derivative of the x function-vector
 d_xi_x = [
@@ -93,6 +98,7 @@ function init_LG_matrix(Nx1, Nx2)
   return LG
 end
 
+
 # Initializes the EQ Vector
 function init_EQ_vector_and_m(Nx1, Nx2)
   m = (Nx1 - 1) * (Nx2 - 1)
@@ -119,6 +125,7 @@ function init_EQ_vector_and_m(Nx1, Nx2)
 
   return cat(EQ'..., dims=1), m
 end
+
 
 # Initializes the Ke matrix
 function init_Ke_matrix(alpha, beta, Xs, Ys)
@@ -163,6 +170,7 @@ function init_Ke_matrix(alpha, beta, Xs, Ys)
   return Ke
 end
 
+
 # Initializes the K matrix
 function init_K_matrix(alpha, beta, X_matrix, Y_matrix, m, EQ, LG)
   ne = size(LG, 2) # assuming we are using a LG (4 x ne)
@@ -182,6 +190,7 @@ function init_K_matrix(alpha, beta, X_matrix, Y_matrix, m, EQ, LG)
   return K[1:m, 1:m]
 end
 
+
 # Initializes the Fe vector
 function init_Fe_vector(f, Xs, Ys)
   Fe = zeros(4)
@@ -199,6 +208,7 @@ function init_Fe_vector(f, Xs, Ys)
   return Fe
 end
 
+
 # Initializes the F vector
 function init_F_vector(f, X_matrix, Y_matrix, m, EQ, LG)
   ne = size(LG, 2) # assuming we are using a LG (4 x ne)
@@ -214,6 +224,7 @@ function init_F_vector(f, X_matrix, Y_matrix, m, EQ, LG)
   return F[1: end-1]
 end
 
+
 # Solves the system using a regular mesh
 function solve_system(alpha, beta, f, Nx1, Nx2; EQLG=false, XY_matrix=false, noise=false)
   X_matrix, Y_matrix = init_mesh(Nx1, Nx2, ns=noise)
@@ -224,6 +235,7 @@ function solve_system(alpha, beta, f, Nx1, Nx2; EQLG=false, XY_matrix=false, noi
   C = K \ F
   return EQLG ? XY_matrix ? (C, EQ, LG, X_matrix, Y_matrix) : (C, EQ, LG) : XY_matrix ? (C, X_matrix, Y_matrix) : C
 end
+
 
 # Plots the approximation for a linear base
 function plot_approximation(alpha, beta, f, Nx1, Nx2; ns=false)
@@ -239,6 +251,7 @@ function plot_approximation(alpha, beta, f, Nx1, Nx2; ns=false)
 
   savefig("approximation_found.png")
 end
+
 
 # Plots the error converge
 function error_convergence(lb, ub, alpha, beta, u, f; see_plot=false, ns=false)
@@ -291,6 +304,7 @@ function error_convergence(lb, ub, alpha, beta, u, f; see_plot=false, ns=false)
   end
 end
 
+
 # Initializes Xs and Ys as a regular mesh
 function init_mesh(Nx1, Nx2; ns=false)
   h1 = 1 / Nx1
@@ -317,6 +331,7 @@ function init_mesh(Nx1, Nx2; ns=false)
   return X, Y
 end
 
+
 # Plots the mesh
 function plot_mesh(X, Y, LG)
   Plots.plot(legend=false, aspect_ratio=:equal, xticks=0:0.25:1, yticks=0:0.25:1)
@@ -334,6 +349,7 @@ function plot_mesh(X, Y, LG)
   savefig("2d-mesh.png")
 end
 
+
 # Constants
 alpha = 1
 beta = 1
@@ -349,18 +365,9 @@ ux2x2 = (x1,x2) -> -1 * pi^2 * sin(pi * x1) * sin(pi * x2)
 f     = (x1,x2) -> (-1 * alpha * ux1x1(x1,x2)) + (-1 * alpha * ux2x2(x1,x2)) + beta * u(x1,x2)
 
 
-# Functions call for testing the implementation
+# Testing the implementation
 plot_approximation(alpha, beta, f, Nx1, Nx2, ns=true)
 error_convergence(2, 5, alpha, beta, u, f, see_plot=true, ns=true)
 LG = init_LG_matrix(Nx1, Nx2)
 X, Y = init_mesh(Nx1, Nx2, ns=true)
 plot_mesh(X, Y, LG)
-
-# t2 = @time plot_error_convergence(2, 7, alpha, beta, u, f)
-    #  best_time2 = minimum(t2.times)
-    #  b = best_time2 / 1e9  # Converting to seconds
-
-    # display(b)
-
-
-# @btime init_mesh(3,2)
