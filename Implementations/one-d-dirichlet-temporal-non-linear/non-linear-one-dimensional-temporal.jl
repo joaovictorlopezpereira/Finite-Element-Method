@@ -5,7 +5,7 @@ using LinearAlgebra    # To use lu
 
 
 # Approximates the Integral of a given function
-function gaussian_quadrature(f, ngp)
+function gauss_quad(f, ngp)
 
   # Initializes P and W according to the number of Gauss points
   P, W = legendre(ngp)
@@ -19,6 +19,7 @@ function gaussian_quadrature(f, ngp)
   return sum
 end
 
+
 # Initializes the LG matrix
 function init_LG_matrix(ne)
   LG = zeros(Int, 2, ne)
@@ -30,6 +31,7 @@ function init_LG_matrix(ne)
 
   return LG
 end
+
 
 # Initializes the EQ vector
 function init_EQ_vector_and_m(ne)
@@ -50,6 +52,7 @@ function init_EQ_vector_and_m(ne)
   return EQ, m
 end
 
+
 # Initializes the K matrix
 function init_K_matrix(ne, EQ, LG, alpha, beta, gamma, m)
 
@@ -60,9 +63,9 @@ function init_K_matrix(ne, EQ, LG, alpha, beta, gamma, m)
 
     for a in 1:2
       for b in 1:2
-        Ke[a,b] = (alpha * 2 / h) * gaussian_quadrature((qsi) -> d_phi(a, qsi) * d_phi(b, qsi), 2) +
-                  (beta * h / 2) * gaussian_quadrature((qsi) -> phi(a, qsi) * phi(b, qsi), 2) +
-                            gamma * gaussian_quadrature((qsi) -> d_phi(b, qsi) * phi(a, qsi), 2)
+        Ke[a,b] = (alpha * 2 / h) * gauss_quad((qsi) -> d_phi(a, qsi) * d_phi(b, qsi), 2) +
+                   (beta * h / 2) * gauss_quad((qsi) -> phi(a, qsi) * phi(b, qsi), 2) +
+                            gamma * gauss_quad((qsi) -> d_phi(b, qsi) * phi(a, qsi), 2)
       end
     end
 
@@ -86,6 +89,7 @@ function init_K_matrix(ne, EQ, LG, alpha, beta, gamma, m)
   return K[1:m, 1:m]
 end
 
+
 # Initializes the F vector
 function init_F_vector(f, ne, EQ, LG, m)
 
@@ -95,7 +99,7 @@ function init_F_vector(f, ne, EQ, LG, m)
     h = 1 / ne
 
     for a in 1:2
-      Fe[a] = (h / 2) * gaussian_quadrature((qsi) -> f(qsi_to_x(qsi, e, h)) *  phi(a, qsi), 5)
+      Fe[a] = (h / 2) * gauss_quad((qsi) -> f(qsi_to_x(qsi, e, h)) *  phi(a, qsi), 5)
     end
 
     return Fe
@@ -114,6 +118,7 @@ function init_F_vector(f, ne, EQ, LG, m)
   return F[1:m]
 end
 
+
 # Initializes the C0 third option vector
 function init_C0_3rd_option_vector(u0x, ne, EQ, LG, m)
 
@@ -123,7 +128,7 @@ function init_C0_3rd_option_vector(u0x, ne, EQ, LG, m)
     h = 1 / ne
 
     for a in 1:2
-      C0e[a] = gaussian_quadrature((qsi) -> u0x(qsi_to_x(qsi, e, h)) *  d_phi(a, qsi), 5)
+      C0e[a] = gauss_quad((qsi) -> u0x(qsi_to_x(qsi, e, h)) *  d_phi(a, qsi), 5)
     end
 
     return C0e
@@ -141,6 +146,7 @@ function init_C0_3rd_option_vector(u0x, ne, EQ, LG, m)
   # Removes the last line
   return C0[1:m]
 end
+
 
 # Initializes the C0 vector
 function init_C0_vector(option, u0, u0x, ne, EQ, LG, alpha, beta, gamma, m)
@@ -169,6 +175,7 @@ function init_C0_vector(option, u0, u0x, ne, EQ, LG, alpha, beta, gamma, m)
   end
 end
 
+
 # Initializes the G vector
 function init_G_vector(g, ne, EQ, LG, C, m, h)
 
@@ -177,7 +184,7 @@ function init_G_vector(g, ne, EQ, LG, C, m, h)
     Ge = zeros(2)
 
     for a in 1:2
-      Ge[a] = h / 2 * gaussian_quadrature((qsi) -> g(C[EQ[LG[1, e]]] * phi(1, qsi) + C[EQ[LG[2, e]]] * phi(2, qsi)) * phi(a, qsi), 5)
+      Ge[a] = h / 2 * gauss_quad((qsi) -> g(C[EQ[LG[1, e]]] * phi(1, qsi) + C[EQ[LG[2, e]]] * phi(2, qsi)) * phi(a, qsi), 5)
     end
 
     return Ge
@@ -197,20 +204,24 @@ function init_G_vector(g, ne, EQ, LG, C, m, h)
   return G[1:m]
 end
 
+
 # Generalized phi function
 function phi(num, qsi)
   return [((1 - qsi) / 2), ((1 + qsi) / 2)][num]
 end
+
 
 # Generalized derivative of the phi function
 function d_phi(num, qsi)
   return [(-1 / 2), (1 / 2)][num]
 end
 
+
 # Converts the interval from [x_i-1 , xi+1] to [-1, 1]
 function qsi_to_x(qsi, i, h)
   return (h / 2) * (qsi + 1) + 0 + (i - 1)*h
 end
+
 
 # Solves the system and returns Cns
 function solve_system(ne, tau, alpha, beta, gamma, T, f, u0, u0x, g, C0option)
@@ -267,6 +278,7 @@ function solve_system(ne, tau, alpha, beta, gamma, T, f, u0, u0x, g, C0option)
   return Cns
 end
 
+
 # Plots a gif with an approximate comparison to the exact function
 function plot_comparison(ne, tau, fr, alpha, beta, gamma, T, f, u, u0, u0x, g, C0option)
 
@@ -289,6 +301,7 @@ function plot_comparison(ne, tau, fr, alpha, beta, gamma, T, f, u, u0, u0x, g, C
   gif(anim, "plot-comparison.gif", fps = fr)
 end
 
+
 # Computes the errors from a system of ne points and returns the maximum error
 function error_from_system(ne, tau, alpha, beta, gamma, T, f, u, u0, u0x, g, C0option)
 
@@ -302,7 +315,7 @@ function error_from_system(ne, tau, alpha, beta, gamma, T, f, u, u0, u0x, g, C0o
 
     # Computing the error
     for e in 1:ne
-      sum = sum + gaussian_quadrature((qsi) -> (u(qsi_to_x(qsi, e, h)) - (ext_cs[EQ[LG[1,e]]] * phi(1, qsi)) - (ext_cs[EQ[LG[2,e]]] * phi(2, qsi)))^2, 5)
+      sum = sum + gauss_quad((qsi) -> (u(qsi_to_x(qsi, e, h)) - (ext_cs[EQ[LG[1,e]]] * phi(1, qsi)) - (ext_cs[EQ[LG[2,e]]] * phi(2, qsi)))^2, 5)
     end
 
     return sqrt(sum * (h / 2))
@@ -330,6 +343,7 @@ function error_from_system(ne, tau, alpha, beta, gamma, T, f, u, u0, u0x, g, C0o
 
   return maximum(errors)
 end
+
 
 # Plots the errors according to the variation of h = tau
 function plot_error_convergence(lb, ub, alpha, beta, gamma, T, f, u, u0, u0x, g, C0option)
@@ -361,13 +375,14 @@ function plot_error_convergence(lb, ub, alpha, beta, gamma, T, f, u, u0, u0x, g,
 
 end
 
+
 # Plots the approximation function
 function plot_approximation(ne, tau, fr, alpha, beta, gamma, T, f, u0, u0x, g, C0option)
   Cns = solve_system(ne, tau, alpha, beta, gamma, T, f, u0, u0x, g, C0option)
   h = 1 / ne
 
   # Iterating for plotting the approximate function
-  anim = @animate for n in 1:length(Cns)
+  anim = @animate for n in eachindex(Cns)
     Cn = Cns[n]
     plt = plot(label = "Approximating u(x,t)",
     xlabel = "x", size=(800, 800), xlim = (0, 1), ylims = (0, 0.15))
@@ -378,7 +393,6 @@ function plot_approximation(ne, tau, fr, alpha, beta, gamma, T, f, u0, u0x, g, C
 end
 
 
-
 # Variables for plot_error_convergence
 lb = 1    # lower-bound limit to 2^lb - 1
 ub = 5    # upper-bound limit to 2^ub - 1
@@ -386,7 +400,7 @@ ub = 5    # upper-bound limit to 2^ub - 1
 # Variables for plot_comparison
 ne = 4
 tau = 1/8
-frate = 4
+framerate = 4
 
 # Constants
 alpha  = 1
@@ -410,14 +424,10 @@ ut  = (x,t) -> sin(π * x) * -1 * exp(-1 * t) / π^2
 g   = (s)   -> s^3 - 2 * s
 f   = (x,t) -> ut(x,t) + (-1 * alpha * uxx(x,t)) + (gamma * ux(x,t)) + (beta * u(x,t)) + g(u(x,t))
 
-# Saves a png for analyzing the error convergence
+# Testing the implementation
 plot_error_convergence(lb, ub, alpha, beta, gamma, T, f, u, u0, u0x, g, 1)
 plot_error_convergence(lb, ub, alpha, beta, gamma, T, f, u, u0, u0x, g, 2)
 plot_error_convergence(lb, ub, alpha, beta, gamma, T, f, u, u0, u0x, g, 3)
 plot_error_convergence(lb, ub, alpha, beta, gamma, T, f, u, u0, u0x, g, 4)
-
-# Saves a gif for visualizing the results
-plot_comparison(ne, tau, frate, alpha, beta, gamma, T, f, u, u0, u0x, g, 1)
-
-# Saves a png for visualizing the approximation
-plot_approximation(ne, tau, frate, alpha, beta, gamma, T, (x, t) -> 0, u0, u0x, g, 1)
+plot_comparison(ne, tau, framerate, alpha, beta, gamma, T, f, u, u0, u0x, g, 1)
+plot_approximation(ne, tau, framerate, alpha, beta, gamma, T, (x, t) -> 0, u0, u0x, g, 1)
