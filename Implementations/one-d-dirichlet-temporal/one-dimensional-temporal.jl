@@ -5,7 +5,7 @@ using LinearAlgebra    # To use lu
 
 
 # Approximates the Integral of a given function
-function gaussian_quadrature(f, ngp)
+function gauss_quad(f, ngp)
 
   # Initializes P and W according to the number of Gauss points
   P, W = legendre(ngp)
@@ -19,6 +19,7 @@ function gaussian_quadrature(f, ngp)
   return sum
 end
 
+
 # Initializes the LG matrix
 function init_LG_matrix(ne)
   LG = zeros(Int, 2, ne)
@@ -30,6 +31,7 @@ function init_LG_matrix(ne)
 
   return LG
 end
+
 
 # Initializes the EQ vector
 function init_EQ_vector_and_m(ne)
@@ -50,24 +52,25 @@ function init_EQ_vector_and_m(ne)
   return EQ, m
 end
 
-# Initializes the Ke matrix
-function init_Ke_matrix(ne, alpha, beta, gamma)
-  h = 1 / ne
-  Ke = zeros(2,2)
-
-  for a in 1:2
-    for b in 1:2
-      Ke[a,b] = (alpha * 2 / h) * gaussian_quadrature((qsi) -> d_phi(a, qsi) * d_phi(b, qsi), 2) +
-                 (beta * h / 2) * gaussian_quadrature((qsi) -> phi(a, qsi) * phi(b, qsi), 2) +
-                          gamma * gaussian_quadrature((qsi) -> d_phi(b, qsi) * phi(a, qsi), 2)
-    end
-  end
-
-  return Ke
-end
-
 # Initializes the K matrix
 function init_K_matrix(ne, EQ, LG, alpha, beta, gamma, m)
+
+  # Initializes the Ke matrix
+  function init_Ke_matrix(ne, alpha, beta, gamma)
+    h = 1 / ne
+    Ke = zeros(2,2)
+
+    for a in 1:2
+      for b in 1:2
+        Ke[a,b] = (alpha * 2 / h) * gauss_quad((qsi) -> d_phi(a, qsi) * d_phi(b, qsi), 2) +
+                  (beta * h / 2) * gauss_quad((qsi) -> phi(a, qsi) * phi(b, qsi), 2) +
+                            gamma * gauss_quad((qsi) -> d_phi(b, qsi) * phi(a, qsi), 2)
+      end
+    end
+
+    return Ke
+  end
+
   K = spzeros(m+1,m+1)
   Ke = init_Ke_matrix(ne, alpha, beta, gamma)
 
@@ -85,23 +88,23 @@ function init_K_matrix(ne, EQ, LG, alpha, beta, gamma, m)
   return K[1:m, 1:m]
 end
 
-# Initializes the Fe vector
-function init_Fe_vector(f, ne, e)
-  Fe = zeros(2)
-  h = 1 / ne
-
-  for a in 1:2
-    Fe[a] = (h / 2) * gaussian_quadrature((qsi) -> f(qsi_to_x(qsi, e, h)) *  phi(a, qsi), 5)
-  end
-
-  return Fe
-end
 
 # Initializes the F vector
 function init_F_vector(f, ne, EQ, LG, m)
-  h = 1 / ne
+
+  # Initializes the Fe vector
+  function init_Fe_vector(f, ne, e)
+    Fe = zeros(2)
+    h = 1 / ne
+
+    for a in 1:2
+      Fe[a] = (h / 2) * gauss_quad((qsi) -> f(qsi_to_x(qsi, e, h)) *  phi(a, qsi), 5)
+    end
+
+    return Fe
+  end
+
   F = zeros(m+1)
-  EQoLG = EQ[LG]
 
   for e in 1:ne
     Fe = init_Fe_vector(f, ne, e)
@@ -115,35 +118,22 @@ function init_F_vector(f, ne, EQ, LG, m)
   return F[1:m]
 end
 
+
 # Generalized phi function
 function phi(number, qsi)
   return [((1 - qsi) / 2), ((1 + qsi) / 2)][number]
 end
+
 
 # Generalized derivative of the phi function
 function d_phi(number, qsi)
   return [(-1 / 2), (1 / 2)][number]
 end
 
+
 # Converts the interval from [x_i-1 , xi+1] to [-1, 1]
 function qsi_to_x(qsi, i, h)
   return (h / 2) * (qsi + 1) + 0 + (i - 1)*h
-end
-
-# Computes the error according to ne
-function gauss_error(u, cs, ne, EQ, LG)
-  sum = 0
-  h = 1 / ne
-
-  # Includes 0 so that the EQ-LG will not compute the first and last phi function
-  ext_cs = [cs ; 0]
-
-  # Computes the error
-  for e in 1:ne
-    sum = sum + gaussian_quadrature((qsi) -> (u(qsi_to_x(qsi, e, h)) - (ext_cs[EQ[LG[1,e]]] * phi(1, qsi)) - (ext_cs[EQ[LG[2,e]]] * phi(2, qsi)))^2, 5)
-  end
-
-  return sqrt(sum * (h / 2))
 end
 
 # Solves the system and returns Cns
@@ -179,6 +169,7 @@ function solve_system(ne, tau, alpha, beta, gamma, T, f, u0)
   return Cns
 end
 
+
 # Plots a gif with an approximate comparison to the exact function
 function plot_comparison(ne, tau, fr, alpha, beta, gamma, T, f, u, u0)
   # Initializes variables and arrays
@@ -200,8 +191,26 @@ function plot_comparison(ne, tau, fr, alpha, beta, gamma, T, f, u, u0)
   gif(anim, "plot-comparison.gif", fps = fr)
 end
 
+
 # Computes the errors from a system of ne points and returns the maximum error
 function error_from_system(ne, tau, alpha, beta, gamma, T, f, u, u0)
+
+  # Computes the error according to ne
+  function gauss_error(u, cs, ne, EQ, LG)
+    sum = 0
+    h = 1 / ne
+
+    # Includes 0 so that the EQ-LG will not compute the first and last phi function
+    ext_cs = [cs ; 0]
+
+    # Computes the error
+    for e in 1:ne
+      sum = sum + gauss_quad((qsi) -> (u(qsi_to_x(qsi, e, h)) - (ext_cs[EQ[LG[1,e]]] * phi(1, qsi)) - (ext_cs[EQ[LG[2,e]]] * phi(2, qsi)))^2, 5)
+    end
+
+    return sqrt(sum * (h / 2))
+  end
+
   # Initializing variables
   h = 1 / ne
   t = 0:tau:T
@@ -224,6 +233,7 @@ function error_from_system(ne, tau, alpha, beta, gamma, T, f, u, u0)
 
   return maximum(errors)
 end
+
 
 # Plots the errors according to the variation of h = tau
 function plot_error_convergence(lb, ub, alpha, beta, gamma, T, f, u, u0)
@@ -279,9 +289,7 @@ u0 = (x)   -> sin(π * x) / π^2
 f  = (x,t) -> sin(π * x) * ((-1 + alpha * π^2 + beta) * exp(-1 * t) / π^2)
 
 
-# Plots a png for analyzing the error convergence
+# Testing the implementation
 plot_error_convergence(lb, ub, alpha, beta, gamma, T, f, u, u0)
-
-# Plots a gif for visualizing the results
 plot_comparison(ne, tau, frate, alpha, beta, gamma, T, f, u, u0)
 
