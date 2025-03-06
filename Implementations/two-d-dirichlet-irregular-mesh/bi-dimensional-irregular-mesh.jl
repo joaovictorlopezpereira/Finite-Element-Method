@@ -2,7 +2,7 @@ using Plots            # To use plot and gif
 using GaussQuadrature  # To use legendre
 using SparseArrays     # To use spzeros
 using LinearAlgebra    # To use lu
-using BenchmarkTools
+
 
 # Approximates the Integral of a given function by the gaussian quadrature technic
 function gauss_quad(f, ngp)
