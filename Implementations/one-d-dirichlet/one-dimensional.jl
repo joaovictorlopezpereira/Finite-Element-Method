@@ -4,7 +4,7 @@ using SparseArrays     # To use spzeros
 
 
 # Approximates the Integral of a given function in the interval [-1:1]
-function gaussian_quadrature(f, ngp)
+function gauss_quad(f, ngp)
 
   # Initializes P and W according to the number of Gauss points
   P, W = legendre(ngp)
@@ -17,6 +17,7 @@ function gaussian_quadrature(f, ngp)
   return sum
 end
 
+
 # Initializes the LG matrix
 function init_LG_matrix(ne)
   LG = zeros(Int, 2,ne)
@@ -28,6 +29,7 @@ function init_LG_matrix(ne)
 
   return LG
 end
+
 
 # Initializes the EQ vector and the m variable
 function init_EQ_vector_and_m(ne)
@@ -49,6 +51,7 @@ function init_EQ_vector_and_m(ne)
   return EQ, m
 end
 
+
 # Initializes the K matrix
 function init_K_matrix(ne, EQ, LG, alpha, beta, gamma, m)
 
@@ -59,7 +62,7 @@ function init_K_matrix(ne, EQ, LG, alpha, beta, gamma, m)
 
     for a in 1:2
       for b in 1:2
-        Ke[a,b] = (alpha * 2 / h) * gaussian_quadrature((qsi) -> d_phi(a, qsi) * d_phi(b, qsi), 2) + (beta * h / 2) * gaussian_quadrature((qsi) -> phi(a, qsi) * phi(b, qsi), 2) + gamma * gaussian_quadrature((qsi) -> d_phi(b, qsi) * phi(a, qsi), 2)
+        Ke[a,b] = (alpha * 2 / h) * gauss_quad((qsi) -> d_phi(a, qsi) * d_phi(b, qsi), 2) + (beta * h / 2) * gauss_quad((qsi) -> phi(a, qsi) * phi(b, qsi), 2) + gamma * gauss_quad((qsi) -> d_phi(b, qsi) * phi(a, qsi), 2)
       end
     end
 
@@ -84,6 +87,7 @@ function init_K_matrix(ne, EQ, LG, alpha, beta, gamma, m)
   return K[1:m, 1:m]
 end
 
+
 # Initializes the F vector
 function init_F_vector(f, ne, EQ, LG, m)
 
@@ -93,7 +97,7 @@ function init_F_vector(f, ne, EQ, LG, m)
     h = 1 / ne
 
     for a in 1:2
-      Fe[a] = (h / 2) * gaussian_quadrature((qsi) -> f(qsi_to_x(qsi, e, h)) *  phi(a, qsi), 5)
+      Fe[a] = (h / 2) * gauss_quad((qsi) -> f(qsi_to_x(qsi, e, h)) *  phi(a, qsi), 5)
     end
 
     return Fe
@@ -115,20 +119,24 @@ function init_F_vector(f, ne, EQ, LG, m)
   return F[1:m]
 end
 
+
 # Generalizes the phi (base) function
 function phi(number, qsi)
   return [((1 - qsi) / 2), ((1 + qsi) / 2)][number]
 end
+
 
 # Generalizes the derivative of the phi (base) function
 function d_phi(number, qsi)
   return [(-1 / 2), (1 / 2)][number]
 end
 
+
 # Converts the interval from [x_i-1 , xi+1] to [-1, 1]
 function qsi_to_x(qsi, i, h)
   return (h / 2) * (qsi + 1) + 0 + (i - 1)*h
 end
+
 
 # Solves the system given the input data of the strong formulation
 function solve_system(ne, alpha, beta, gamma, f, u)
@@ -139,6 +147,7 @@ function solve_system(ne, alpha, beta, gamma, f, u)
   F     = init_F_vector(f, ne, EQ, LG, m)
   return K \ F
 end
+
 
 # Plots the exact and inexact graphs, as well as the absolute and relative errors
 function plot_comparison(ne, alpha, beta, gamma, f, u)
@@ -159,6 +168,7 @@ function plot_comparison(ne, alpha, beta, gamma, f, u)
   savefig("approximation-graph.png")
 end
 
+
 # Plots the graph of errors according to the varying of n
 function error_analysis(lb, ub)
 
@@ -172,7 +182,7 @@ function error_analysis(lb, ub)
 
     # Computes the error
     for e in 1:ne
-      sum = sum + gaussian_quadrature((qsi) -> (u(qsi_to_x(qsi, e, h)) - (extended_cs[EQ[LG[1,e]]] * phi(1, qsi)) - (extended_cs[EQ[LG[2,e]]] * phi(2, qsi)))^2, 5)
+      sum = sum + gauss_quad((qsi) -> (u(qsi_to_x(qsi, e, h)) - (extended_cs[EQ[LG[1,e]]] * phi(1, qsi)) - (extended_cs[EQ[LG[2,e]]] * phi(2, qsi)))^2, 5)
     end
 
     return sqrt(sum * (h / 2))
