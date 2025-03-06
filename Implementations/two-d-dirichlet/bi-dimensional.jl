@@ -19,6 +19,7 @@ function gauss_quad(f, ngp)
   return sum
 end
 
+
 # Approximates the Integral of a given function by the gaussian quadrature technic
 function double_gauss_quad(f, ngp)
 
@@ -36,12 +37,14 @@ function double_gauss_quad(f, ngp)
   return sum
 end
 
+
 # Phi function-vector
 phi = [(xi1, xi2) -> (1 - xi1) * (1 - xi2) * (1 / 4);
        (xi1, xi2) -> (1 + xi1) * (1 - xi2) * (1 / 4);
        (xi1, xi2) -> (1 + xi1) * (1 + xi2) * (1 / 4);
        (xi1, xi2) -> (1 - xi1) * (1 + xi2) * (1 / 4)
 ]
+
 
 # Derivative of the phi function-vector
 d_qsi_phi = [
@@ -55,11 +58,13 @@ d_qsi_phi = [
    ((xi1, xi2) -> ( 1 / 4) * (1 - xi1))]
 ]
 
+
 # Converts the interval
 x = [
   (xi, eta, h1, h2, pe1, pe2) -> (h1 / 2) * (xi + 1) + pe1;
   (xi, eta, h1, h2, pe1, pe2) -> (h2 / 2) * (eta + 1) + pe2
 ]
+
 
 # Initializes the LG matrix
 function init_LG_matrix(Nx1, Nx2)
@@ -82,6 +87,7 @@ function init_LG_matrix(Nx1, Nx2)
 
   return LG
 end
+
 
 # Initializes the EQ Vector
 function init_EQ_vector_and_m(Nx1, Nx2)
@@ -109,6 +115,7 @@ function init_EQ_vector_and_m(Nx1, Nx2)
 
   return cat(EQ'..., dims=1), m
 end
+
 
 # Initializes the K matrix
 function init_K_matrix(alpha, beta, Nx1, Nx2, m, EQ, LG)
@@ -148,6 +155,7 @@ function init_K_matrix(alpha, beta, Nx1, Nx2, m, EQ, LG)
   return K[1:end-1, 1:end-1]
 end
 
+
 # Initializes the F vector
 function init_F_vector(f, Nx1, Nx2, m, EQ, LG)
 
@@ -185,6 +193,7 @@ function init_F_vector(f, Nx1, Nx2, m, EQ, LG)
   return F[1: end-1]
 end
 
+
 # Solves the system
 function solve_system(alpha, beta, Nx1, Nx2, f; EQLG=false)
   EQ, m = init_EQ_vector_and_m(Nx1, Nx2)
@@ -194,6 +203,7 @@ function solve_system(alpha, beta, Nx1, Nx2, f; EQLG=false)
   C = K \ F
   return EQLG ? (C, EQ, LG) : C
 end
+
 
 # Plots the approximation found
 function plot_approximation(alpha, beta, Nx1, Nx2, f)
@@ -210,6 +220,7 @@ function plot_approximation(alpha, beta, Nx1, Nx2, f)
 
   savefig("approximation_found.png")
 end
+
 
 # Plots the error converge
 function plot_error_convergence(lb, ub, alpha, beta, u, f)
@@ -266,6 +277,7 @@ function plot_error_convergence(lb, ub, alpha, beta, u, f)
 
 end
 
+
 # Plots the comparison between our approximation and the exact function
 function plot_comparison(alpha, beta, Nx1, Nx2, f, u)
   # Initializes the axes and computes the temperatures (including the boundary condition) (works only in linear bases)
@@ -281,6 +293,7 @@ function plot_comparison(alpha, beta, Nx1, Nx2, f, u)
   savefig("comparison.png")
 end
 
+
 # Constants
 alpha = 1
 beta = 1
@@ -295,7 +308,7 @@ ux1x1 = (x1,x2) -> -1 * pi^2 * sin(pi * x1) * sin(pi * x2)
 ux2x2 = (x1,x2) -> -1 * pi^2 * sin(pi * x1) * sin(pi * x2)
 f     = (x1,x2) -> (-1 * alpha * ux1x1(x1,x2)) + (-1 * alpha * ux2x2(x1,x2)) + beta * u(x1,x2)
 
-# Functions call for testing the implementation
+# Testing the implementation
 plot_approximation(alpha, beta, Nx1, Nx2, f)
 plot_comparison(alpha, beta, Nx1, Nx2, f, u)
 plot_error_convergence(2, 6, alpha, beta, u, f)
