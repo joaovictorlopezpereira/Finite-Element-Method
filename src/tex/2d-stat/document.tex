@@ -1,0 +1,269 @@
+% >8-----------------------------------------------------------------------------------------------------------------8<
+
+\chapter{Aproximação do Problema Estacionário Bidimensional}
+
+\subsection*{Definição de Notação}
+
+  \textbf{Definição:} $\Omega \subset \mathbb{R}^2$
+
+  \textbf{Definição:} $\Gamma$ é a fronteira de $\Omega$
+
+  \textbf{Definição:} $\overline{\Omega} = \Gamma \cup \Omega$
+
+  \textbf{Definição:} $\Delta u(x) = u_{x_{1}x_{1}}(x) + u_{x_{2}x_{2}}(x)$ sendo $x = (x_1, x_2)$ ponto $\in \mathbb{R}^2$
+
+\section{Definição da Formulação Forte}
+
+  Dada uma função $f: \Omega \to \mathbb{R}$ e constantes $\alpha > 0$ e $\beta \geq 0$. Queremos determinar $u : \overline{\Omega} \to \mathbb{R}$ tal que:
+
+  \begin{center}
+    $(S) = \begin{cases}
+      -\alpha \Delta u(x) + \beta u(x) = f(x) \quad &\forall x \in \Omega\\ \\
+      u(x) = 0 \quad &\forall x \in \Gamma.
+    \end{cases}$
+  \end{center}
+
+\section{Transição entre a Formulação Forte e Fraca}
+
+  Seja $v$ uma função que satisfaça $v(x) = 0$ $\forall x \in \Gamma$. Multiplicando ambos os lados da equação por $v$:
+
+  \begin{align*}
+    -\alpha \Delta u(x) + \beta u(x) &= f(x) \\
+    -\alpha \Delta u(x)v(x) + \beta u(x)v(x) &= f(x)v(x) \\
+    \int_{\Omega} \left[-\alpha \Delta u(x)v(x) + \beta u(x)v(x)\right] \, d\Omega &= \int_{\Omega} f(x)v(x) \, d\Omega \\
+    -\alpha \int_{\Omega} \Delta u(x)v(x) \, d\Omega + \beta \int_{\Omega} u(x)v(x) \, d\Omega &= \int_{\Omega} f(x)v(x) \, d\Omega \\
+    -\alpha \int_{\Omega} u_{x_{1}x_{1}}(x)v(x) \, d\Omega -\alpha \int_{\Omega} u_{x_{2}x_{2}}v(x) \, d\Omega + \beta \int_{\Omega} u(x)v(x) \, d\Omega &= \int_{\Omega} f(x)v(x) \, d\Omega \\
+  \end{align*}
+
+  Semelhante aos casos unidimensionais, eliminaremos as segundas derivadas em $x_1$ e $x_2$:
+
+  \subsection*{Generalização da Integral por partes}
+
+  Pela regra da cadeia:
+
+  \[[u_{x_{i}}(x)v(x)]_{x_{i}} = u_{x_{i}x_{i}}(x)v(x) + u_{x_{i}}(x)v_{x_{i}}(x)\]
+
+  Integrando dos dois lados:
+
+  \[\int_{\Omega}[u_{x_{i}}(x)v(x)]_{x_{i}} \, d\Omega = \int_{\Omega} u_{x_{i}x_{i}}(x)v(x) \, d\Omega + \int_{\Omega} u_{x_{i}}(x)v_{x_{i}}(x) \, d\Omega\]
+
+  Pelo teorema da divergência,
+
+  \[\int_{\Omega}[u_{x_{i}}(x)v(x)]_{x_{i}} \, d\Omega = \int_{\Gamma} u_{x_{i}}(x)v(x)\eta_i \, d\Gamma\]
+
+  Mas visto que $v(x) = 0 \forall x \in \Gamma$, então:
+
+  \[\int_{\Gamma} u_{x_{i}}(x)v(x)\eta_i \, d\Gamma = 0\]
+
+  Então:
+
+  \[0 = \int_{\Omega} u_{x_{i}x_{i}}(x)v(x) \, d\Omega + \int_{\Omega} u_{x_{i}}(x)v_{x_{i}}(x) \, d\Omega\]
+
+  \[\int_{\Omega} u_{x_{i}}(x)v_{x_{i}}(x) \, d\Omega = - \int_{\Omega} u_{x_{i}x_{i}}(x)v(x) \, d\Omega\]
+
+  Substituindo na equação principal:
+
+  \[\alpha \int_{\Omega} u_{x_{1}x_{1}}(x)v_{x_{i}}(x) \, d\Omega + \alpha \int_{\Omega} u_{x_{2}x_{2}}v_{x_{i}}(x) \, d\Omega + \beta \int_{\Omega} u(x)v(x) \, d\Omega = \int_{\Omega} f(x)v(x) \, d\Omega\]
+
+  Que pode ser reescrito como:
+
+  \[\alpha \int_{\Omega} \Delta u(x) \Delta v(x) \, d\Omega + \beta \int_{\Omega} u(x)v(x) \, d\Omega = \int_{\Omega} f(x)v(x) \, d\Omega\]
+
+
+\subsection*{Definição de Notação}
+
+  \textbf{Definição:} $\displaystyle (f,g) = \int_{0}^{1} f(x)g(x) \, dx$
+
+  \textbf{Definição:} $\displaystyle \kappa(f,g) = \alpha \int_{\Omega} \Delta f(x)\Delta g(x) \, dx + \beta \int_{\Omega} f(x)g(x) \, dx$
+
+  Ou seja, nosso problema:
+
+  \[\alpha \int_{\Omega} \Delta u(x) \Delta v(x) \, d\Omega + \beta \int_{\Omega} u(x)v(x) \, d\Omega = \int_{\Omega} f(x)v(x) \, d\Omega\]
+
+  Pode ser escrito como:
+
+  \[\kappa(u,v) = (f,v)\]
+
+\section{Definição da Formulação Fraca}
+
+  \textbf{Definição}: Pelo restante do documento, considere que uma função $g$ é ``suficientemente suave'' se ela respeitar:
+  \begin{itemize}
+    \item $g$ é contínua em todo o domínio;
+    \item $g$ possui derivadas contínuas até a ordem necessária.
+  \end{itemize}
+
+  Seja $H$ um espaço de funções formado por funções $u$ suficientemente suaves que satisfazem $(W)$ e as condições de contorno $u(x) = 0$ $\forall x \in \Gamma$. Seja $V$ um espaço das funções de teste, composto por funções $v$ suficientemente suaves e que satisfazem as condições de contorno $v(x) = 0$ $\forall x \in \Gamma$.
+
+  Dada uma função $f: \Omega \to \mathbb{R}$ e constantes $\alpha > 0$ e $\beta \geq 0$, queremos determinar $u \in H$, $u : \overline{\Omega} \to \mathbb{R}$ tal que, $\forall v \in V$:
+
+  \[(W) = \begin{cases}
+    \kappa(u,v) = (f,v) &\forall x \in \Omega \\\\
+    u(x) = 0 ,\quad &\forall x \in \Gamma.
+  \end{cases}\]
+
+
+\section{Definição do Problema Aproximado}
+
+Seja $H^m$ um espaço de funções formado por funções $u_h$ suficientemente suaves que satisfazem $(A)$ e as condições de contorno $u_h(x) = 0$ $\forall x \in \Gamma$. Seja $V^m$ um espaço das funções de teste, composto por funções $v_h$ suficientemente suaves e que satisfazem as condições de contorno $v_h(x) = 0$ $\forall x \in \Gamma$.
+
+Dada uma função $f: \Omega \to \mathbb{R}$ e constantes $\alpha > 0$ e $\beta \geq 0$, queremos determinar $u_h \in H^m$, $u_h : \overline{\Omega} \to \mathbb{R}$ tal que, $\forall v_h \in V^m$:
+
+\[(A) = \begin{cases}
+  \kappa(u_h,v_h) = (f,v_h) &\forall x \in \Omega \\\\
+  u_h(x) = 0 ,\quad &\forall x \in \Gamma.
+\end{cases}\]
+
+
+\section{Transição entre o Problema Aproximado e a Forma Matriz Vetor}
+
+  Tomando $u_h(x)$ como combinação linear das funções da base de $H^m$:
+
+  \[u_h(x) = \sum_{j=1}^{m}c_j\varphi_j(x).\]
+
+  Assim, temos:
+
+  \begin{align*}
+    \kappa(u_h,v_h) &= (f,v_h) \\
+    \kappa(\sum_{j=1}^{m}c_j\varphi_j(x),v_h) &= (f,v_h) \\
+    \sum_{j=1}^{m} \kappa(c_j\varphi_j(x),v_h) &= (f,v_h) \\
+    \sum_{j=1}^{m} \kappa(\varphi_j(x),v_h)c_j &= (f,v_h).
+  \end{align*}
+
+  Tomando $v_h = \varphi_i$, $\forall i \in \{1,\dots,m\}$:
+
+  \[\begin{cases}
+    \kappa(\varphi_1, \varphi_1)c_1 + \dots + \kappa(\varphi_j, \varphi_1)c_j + \dots + \kappa(\varphi_m, \varphi_1)c_m = (f, \varphi_1)\\
+    \vdots \\
+    \kappa(\varphi_1, \varphi_i)c_1 + \dots + \kappa(\varphi_j, \varphi_i)c_j + \dots + \kappa(\varphi_m, \varphi_i)c_m = (f, \varphi_i)\\
+    \vdots \\
+    \kappa(\varphi_1, \varphi_m)c_1 + \dots + \kappa(\varphi_j, \varphi_m)c_j + \dots + \kappa(\varphi_m, \varphi_m)c_m = (f, \varphi_m)
+  \end{cases}\]
+
+  Que pode ser escrito na forma matriz-vetor:
+
+  \[\begin{bmatrix}
+    \kappa(\varphi_1, \varphi_1) & \dots & \kappa(\varphi_j, \varphi_1) & \dots & \kappa(\varphi_m, \varphi_1)\\
+    \vdots & & \vdots & & \vdots \\
+    \kappa(\varphi_1, \varphi_i) & \dots & \kappa(\varphi_j, \varphi_i) & \dots & \kappa(\varphi_m, \varphi_i)\\
+    \vdots & & \vdots & & \vdots \\
+    \kappa(\varphi_1, \varphi_m) & \dots & \kappa(\varphi_j, \varphi_m) & \dots & \kappa(\varphi_m, \varphi_m)
+  \end{bmatrix}
+  \begin{bmatrix}
+    c_1 \\ \vdots \\ c_j \\ \vdots \\ c_m
+  \end{bmatrix} =
+  \begin{bmatrix}
+    (f, \varphi_1) \\ \vdots \\ (f, \varphi_i) \\ \vdots \\ (f, \varphi_m)
+  \end{bmatrix}\]
+
+
+\subsection*{Definição de Notação}
+
+  \textbf{Definição:} $\displaystyle \mathcal{K} = \begin{bmatrix}
+    \kappa(\varphi_1, \varphi_1) & \dots & \kappa(\varphi_j, \varphi_1) & \dots & \kappa(\varphi_m, \varphi_1)\\
+    \vdots & & \vdots & & \vdots \\
+    \kappa(\varphi_1, \varphi_i) & \dots & \kappa(\varphi_j, \varphi_i) & \dots & \kappa(\varphi_m, \varphi_i)\\
+    \vdots & & \vdots & & \vdots \\
+    \kappa(\varphi_1, \varphi_m) & \dots & \kappa(\varphi_j, \varphi_m) & \dots & \kappa(\varphi_m, \varphi_m)
+  \end{bmatrix}$
+
+  \textbf{Definição:} $\displaystyle \mathcal{C} = \begin{bmatrix}
+    c_1 \\ \vdots \\ c_j \\ \vdots \\ c_m
+  \end{bmatrix}$
+
+  \textbf{Definição:} $\displaystyle \mathcal{F} = \begin{bmatrix}
+    (f, \varphi_1) \\ \vdots \\ (f, \varphi_i) \\ \vdots \\ (f, \varphi_m)
+  \end{bmatrix}$
+
+\section{Definição do Problema na Forma Matriz-vetor}
+
+  Dado uma matriz $\mathcal{K}$ e um vetor $\mathcal{F}$, queremos determinar $\mathcal{C}$ tal que:
+
+  \[(M) = \begin{cases} \\
+    \mathcal{K} \mathcal{C} = \mathcal{F} \\
+  \end{cases}\]
+
+\chapter{Detalhes de Implementação}
+
+\section{Mudança de Intervalo e Funções Locais}
+
+  Visto que queremos modificar nosso espaço para $[[-1, 1], [-1, 1]]$ para podermos usar a quadratura gaussiana como aproximação de integral, definiremos a função $x(\xi)$ tal que:
+
+  \[x(\xi) = (x_1(\xi), x_2(\xi)) \begin{cases}
+    x_1(\xi) = \dfrac{h_1}{2}(\xi_1 + 1) + p^e_1 \\
+    \vphantom{}\\
+    x_2(\xi) = \dfrac{h_2}{2}(\xi_2 + 1) + p^e_2 \\
+  \end{cases}\]
+
+  Além disso, nossas funções de base locais $\varphi_a^e(x)$ terão seu domínio alterado tais que:
+
+  \[\varphi_a^e(x(\xi)) = \phi_a(\xi)\]
+
+  e sua derivada:
+
+  \[\varphi_{a\,x_i}^e(x(\xi)) = \dfrac{2}{h_i}\phi_{a\,\xi_i}(\xi)\]
+
+  O termo $\dfrac{2}{h_i}$ é a derivada de $x(\xi)$ que surge no momento de derivar o termo esquerdo da equação e realizar a regra da cadeia.
+
+\section{Cálculo do Vetor Local}
+
+  Vimos que $\displaystyle \mathcal{F} = \begin{bmatrix}
+    (f, \varphi_1) \\ \vdots \\ (f, \varphi_i) \\ \vdots \\ (f, \varphi_m)
+  \end{bmatrix}$, sendo assim:
+
+  \begin{align*}
+    F_a^e &= \int_{\Omega^e} f(x) \varphi_a^e(x) \, d\Omega \\
+    F_a^e &= \int_{-1}^{1}\int_{-1}^{1} f(x(\xi)) \varphi_a^e(x(\xi)) \, J \, d\xi_1 \, d\xi_2
+  \end{align*}
+
+  Tal que:
+
+  \begin{align*}
+    J &= \det\left(\begin{bmatrix} x_{1 \, \xi_1}(\xi) & x_{1 \, \xi_2}(\xi) \\ x_{2 \, \xi_1}(\xi) & x_{2 \, \xi_2}(\xi)\end{bmatrix}\right) \\
+    &= \det\left(\begin{bmatrix} \dfrac{h_1}{2} & 0 \\ 0 & \dfrac{h_2}{2} \end{bmatrix}\right) \\
+    &= \dfrac{h_1h_2}{4}
+  \end{align*}
+
+  Sendo assim:
+
+  \begin{align*}
+    F_a^e &= \int_{-1}^{1}\int_{-1}^{1} f(x(\xi)) \varphi_a^e(x(\xi)) \dfrac{h_1h_2}{4} \, d\xi_1 \, d\xi_2 \\
+    &= \dfrac{h_1h_2}{4} \int_{-1}^{1}\int_{-1}^{1} f(x(\xi)) \varphi_a^e(x(\xi)) \, d\xi_1 \, d\xi_2 \\
+    &= \dfrac{h_1h_2}{4} \int_{-1}^{1}\int_{-1}^{1} f(x_1(\xi_1, \xi_2), x_2(\xi_1, \xi_2)) \phi_a(\xi_1, \xi_2) \, d\xi_1 \, d\xi_2
+  \end{align*}
+
+\section{Cálculo da Matriz local}
+
+  Visto que $\displaystyle \mathcal{K} = \begin{bmatrix}
+    \kappa(\varphi_1, \varphi_1) & \dots & \kappa(\varphi_j, \varphi_1) & \dots & \kappa(\varphi_m, \varphi_1)\\
+    \vdots & & \vdots & & \vdots \\
+    \kappa(\varphi_1, \varphi_i) & \dots & \kappa(\varphi_j, \varphi_i) & \dots & \kappa(\varphi_m, \varphi_i)\\
+    \vdots & & \vdots & & \vdots \\
+    \kappa(\varphi_1, \varphi_m) & \dots & \kappa(\varphi_j, \varphi_m) & \dots & \kappa(\varphi_m, \varphi_m)
+  \end{bmatrix}$, sendo assim:
+
+  \begin{align*}
+    K^e_{a,b} &= \alpha \int_{\Omega^e} \varphi^e_{b\,x_1}(x) \varphi^e_{a\,x_1}(x) \, d\Omega + \alpha \int_{\Omega^e} \varphi^e_{b\,x_2}(x) \varphi^e_{a\,x_2}(x) \, d\Omega + \beta \int_{\Omega^e} \varphi^e_b(x) \varphi^e_a(x) \, d\Omega \\
+    &= \alpha \int_{-1}^{1}\int_{-1}^{1} \varphi^e_{b\,x_1}(x(\xi)) \varphi^e_{a\,x_1}(x(\xi)) J \, d\xi_1 \, d\xi_2 + \alpha \int_{-1}^{1}\int_{-1}^{1} \varphi^e_{b\,x_2}(x(\xi)) \varphi^e_{a\,x_2}(x(\xi)) J \, d\xi_1 \, d\xi_2 \\
+    &\quad\quad + \beta \int_{-1}^{1}\int_{-1}^{1} \varphi^e_b(x(\xi)) \varphi^e_a(x(\xi)) J \, d\xi_1 \, d\xi_2 \\
+    &= \alpha \int_{-1}^{1}\int_{-1}^{1} \phi_{b\,x_1}(\xi)\dfrac{2}{h_1} \phi_{a\,x_1}(\xi)\dfrac{2}{h_1} \dfrac{h_1h_2}{4} \, d\xi_1 \, d\xi_2 + \alpha \int_{-1}^{1}\int_{-1}^{1} \phi_{b\,x_2}(\xi)\dfrac{2}{h_2} \phi_{a\,x_2}(\xi)\dfrac{2}{h_2} \dfrac{h_1h_2}{4} \, d\xi_1 \, d\xi_2 \\
+    &\quad\quad + \beta \int_{-1}^{1}\int_{-1}^{1} \phi_b(\xi) \phi_a(\xi) \dfrac{h_1h_2}{4} \, d\xi_1 \, d\xi_2 \\
+    &= \alpha\dfrac{h_2}{h_1} \int_{-1}^{1}\int_{-1}^{1} \phi_{b\,x_1}(\xi) \phi_{a\,x_1}(\xi) \, d\xi_1 \, d\xi_2
+    + \alpha\dfrac{h_1}{h_2} \int_{-1}^{1}\int_{-1}^{1} \phi_{b\,x_2}(\xi) \phi_{a\,x_2}(\xi) \, d\xi_1 \,d\xi_2 \\
+    &\quad\quad + \beta\dfrac{h_1h_2}{4} \int_{-1}^{1}\int_{-1}^{1} \phi_b(\xi) \phi_a(\xi) \, d\xi_1 \, d\xi_2
+\end{align*}
+
+\section{Cálculo do Erro}
+
+  Temos que:
+
+  \[E^2 = \norm{u - u_h}^2\]
+
+  Logo:
+
+  \begin{align*}
+    E^2 &= \norm{u(x,y) - u_h(x,y)}^2 \\
+    &= \int_{\Omega}(u(x,y) - u_h(x,y))^2 \,d\Omega \\
+    &= \int_{0}^{1}\int_{0}^{1}(u(x,y) - u_h(x,y))^2 \,dx \,dy \\
+    &= \sum_{e=1}^{ne} \int_{-1}^{1}\int_{-1}^{1}(u(x(\xi_1, \xi_2)) - \sum_{a=1}^{4}C_{EQ[LG[a,e]]}\phi_a(\xi))^2 \textit{det}(J) \,dx \,dy \\
+    E &= \sqrt{\sum_{e=1}^{ne} \int_{-1}^{1}\int_{-1}^{1}(u(x(\xi_1, \xi_2)) - \sum_{a=1}^{4}C_{EQ[LG[a,e]]}\phi_a(\xi))^2 \textit{det}(J) \,dx \,dy} \\
+  \end{align*}

@@ -1,0 +1,120 @@
+% Language and Document
+\usepackage[brazil]{babel}                % Document in Brazilian Portuguese
+\usepackage[utf8]{inputenc}               % Listings recognize UTF-8 characters
+\usepackage[T1]{fontenc}                  % Document allows proper copy-pasting
+
+% Images
+\usepackage{graphicx}                     % Image insertion
+\usepackage{float}                        % Force exact image positioning [H]
+
+% References and Figures
+\usepackage{tocloft}                      % Table of Contents
+\usepackage{hyperref}                     % Hyperlinks
+\usepackage{csquotes}                     % Formatting of bibliographic citations
+\usepackage[backend=biber]{biblatex}      % Bibliographic references
+\addbibresource{repertoire.bib}           % Reference file
+\graphicspath{{figures/}}                 % Image source directory used in the document
+
+% Formatting
+\usepackage{cancel}
+\usepackage[top=1in, bottom=1in, left=0.5in, right=0.5in]{geometry}
+\usepackage{amsmath, amssymb}             % Mathematical symbols
+\usepackage{fancyvrb}                     % Verbatim commands
+\usepackage{upquote}                      % Correct single quote in verbatim
+\usepackage{indentfirst}                  % Indentation in the first paragraph
+\usepackage{listings}                     % Insert code snippets (e.g., LISP)
+\setlength{\parskip}{\baselineskip}       % Vertical spacing between paragraphs
+\setlength{\footnotesep}{0.8em}           % Spacing between text and footer
+\setlength{\skip\footins}{2em}            % Spacing before the footer
+\setlength{\cftbeforechapskip}{12pt}      % Spacing before chapters in TOC
+\setlength{\cftbeforesecskip}{6pt}        % Spacing before sections in TOC
+\setlength{\jot}{10pt}
+
+% Title
+\title{
+  Resolução do Problema Unidimensional \\
+  Estacionário com Condição de \\
+  fronteira de Dirichlet Homogênea \\
+  via o Método dos Elementos Finitos
+}
+
+% Date
+\date{
+  \today\\
+  \vfill
+  Rio de Janeiro - RJ
+}
+
+% Authors
+\author{
+  João Victor Lopez Pereira
+}
+
+% Code Environment
+\lstnewenvironment{code}[1][]{             % Scheme Code
+  \lstset{
+    basicstyle=\ttfamily,
+    columns=flexible,                      % Testing as flexible
+    breaklines=true,
+    breakatwhitespace=true,
+    frame=none,
+    basewidth=0.5em,                       % Ensures fixed-width among letters
+    aboveskip=13pt,
+    belowskip=0pt,
+    #1
+  }
+}{}
+
+% Multiline Code Output
+\lstnewenvironment{styledoutput}[1][]{
+  \lstset{
+    basicstyle=\ttfamily\itshape,
+    breaklines=true,
+    breakatwhitespace=true,
+    frame=none,
+    aboveskip=0pt,
+    #1
+  }
+}{}
+
+% Code Input
+\newcommand{\userinput}[1]{
+  \noindent
+  \texttt{\textit{>}}
+  \texttt{#1}
+}
+
+% Code Output
+\newcommand{\useroutput}[1]{              % REPL output to the user
+  \textit{\texttt{#1}}
+}
+
+% Bibliographic Citation
+\newcommand{\excerpt}[4]{                 % {quote}{author}{source}{cite}
+  \vspace{25pt}
+  \begin{quote}
+    \begin{center}
+      \hfill
+      \begin{minipage}{0.65\textwidth}
+        ``#1''
+
+        \vspace{5pt}---#2, \\
+        \textit{``#3''}#4
+      \end{minipage}
+    \end{center}
+  \end{quote}
+  \vspace{25pt}
+}
+
+% Mathematical Function/Formula Definition
+\newcommand{\mathformula}[1]{
+  \vspace{7pt}
+    \[#1\]
+  \vspace{7pt}
+}
+
+% Variables
+\newcommand{\var}[1]{\texttt{#1}}
+
+% Foreign Words
+\newcommand{\nonport}[1]{\textit{#1}}

@@ -10,4 +10,6 @@ I must acknowledge that much of the inspiration and learning came from the repos
 
 You can check out my final project at [FiniteElements2dDirichlet.jl](https://github.com/joaovictorlopezpereira/FiniteElements2dDirichlet.jl). It is a ``Julia`` package that solves a bidimensional stationary equation using the Finite Element Method. The package was officially accepted into the ``Julia`` registry in December 2024.
 
+obs: the ``one-dimensional-non-homogeneous-Dirichlet-condition.jl`` implementation is missing the correct implementation for the error computation function.
+
 Any additional bibliography used is cited in the ``.pdf`` files.

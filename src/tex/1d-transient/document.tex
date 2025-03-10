@@ -1,0 +1,218 @@
+% >8-----------------------------------------------------------------------------------------------------------------8<
+
+\chapter{Resolução do Problema Transiente}
+\section{Definição da Formulação Forte}
+
+  Dada uma função $f(x,t) : [0,1] \times [0,T] \to \mathbb{R}$, uma função $u_0 : [0,1] \to \mathbb{R}$ e constantes $\alpha > 0$, $\beta \geq 0$ e $T > 0$, queremos determinar a função $u : [0,1] \times [0,T] \to \mathbb{R}$ tal que:
+
+  \begin{center}
+    $(S) = \begin{cases}
+      u_t(x,t) -\alpha u_{xx}(x,t) + \beta u(x,t) = f(x,t)\,\, \forall x \in (0, 1) \\ \\
+      u(0,t) = u(1,t) = 0 \\ \\
+      u(x,0) = u_0(x).
+    \end{cases}$
+  \end{center}
+
+\section{Transição entre a Formulação Forte e Fraca}
+
+  Visto que $u_t(x,t) -\alpha u_{xx}(x,t) + \beta u(x,t) = f(x,t)$, podemos multiplicar ambos por lados por uma função $v(x)$ tal que $v(1) = v(0) = 0$ que nos ajude a eliminar a segunda derivada $u_{xx}$:
+
+  \begin{align*}
+    u_t(x,t) -\alpha u_{xx}(x,t) + \beta u(x,t) &= f(x,t)  \\
+    [u_t(x,t) -\alpha u_{xx}(x,t) + \beta u(x,t)]v(x) &= f(x,t)v(x)\\
+    u_t(x,t)v(x) -\alpha u_{xx}(x,t)v(x) + \beta u(x,t)v(x) &= f(x,t)v(x)\\
+    \int_{0}^{1} u_t(x,t)v(x) dx -\int_{0}^{1}\alpha u_{xx}(x,t)v(x) dx + \int_{0}^{1} \beta u(x,t)v(x) dx &= \int_{0}^{1}f(x,t)v(x) dx \\
+    \int_{0}^{1} u_t(x,t)v(x) dx -\alpha \int_{0}^{1} u_{xx}(x,t)v(x) dx + \beta \int_{0}^{1} u(x,t)v(x) dx &= \int_{0}^{1}f(x,t)v(x) dx.
+  \end{align*}
+
+  Sabemos que dadas funções $f$ e $g$:
+
+  \begin{align*}
+    \int f(x)g'(x)dx &= f(x)g(x) - \int f'(x)g(x)dx.
+  \end{align*}
+
+  Logo, realizando a integração por partes para eliminar a segunda derivada em $x_{xx}$:
+
+  \begin{align*}
+    \int_{0}^{1} u_t(x,t)v(x) dx -\alpha \int_{0}^{1} u_{xx}(x,t)v(x) dx + \beta \int_{0}^{1} u(x,t)v(x) dx &= \int_{0}^{1}f(x,t)v(x) dx\\
+    \int_{0}^{1} u_t(x,t)v(x) dx -\alpha [u_x(x,t)v(x) \bigg|^{1}_{0} - \int_{0}^{1} u_{x}(x,t)v_x(x) dx] + \beta \int_{0}^{1} u(x,t)v(x) dx &= \int_{0}^{1}f(x,t)v(x) dx.
+  \end{align*}
+
+  Visto que $v(1) = v(0) = 0$, então
+
+  \begin{align*}
+     -\alpha [u_x(1,t)v(1) - u_x(0,t)v(0) - \int_{0}^{1} u_{x}(x,t)v_x(x) dx] = - \int_{0}^{1} u_{x}(x,t)v_x(x) dx.
+  \end{align*}
+
+  Substituindo na equação:
+
+  \begin{align*}
+    \int_{0}^{1} u_t(x,t)v(x) dx -\alpha [- \int_{0}^{1} u_{x}(x,t)v_x(x) dx] + \beta \int_{0}^{1} u(x,t)v(x) dx &= \int_{0}^{1}f(x,t)v(x) dx\\
+    \int_{0}^{1} u_t(x,t)v(x) dx + \alpha \int_{0}^{1} u_{x}(x,t)v_x(x) dx + \beta \int_{0}^{1} u(x,t)v(x) dx &= \int_{0}^{1}f(x,t)v(x) dx
+  \end{align*}
+
+\subsection*{Definição de Notação}
+
+  \textbf{Definição:} $\displaystyle (f,g) = \int_{0}^{1} f(x)g(x)dx$
+
+  \textbf{Definição:} $\displaystyle \kappa(f,g) = \alpha \int_{0}^{1} f_x(x)g_x(x)dx + \beta \int_{0}^{1} f(x)g(x)dx$
+
+  Ou seja, a equação:
+
+  \[\int_{0}^{1} u_t(x,t)v(x) dx + \alpha \int_{0}^{1} u_{x}(x,t)v_x(x) dx + \beta \int_{0}^{1} u(x,t)v(x) dx = \int_{0}^{1}f(x,t)v(x) dx\]
+
+  pode ser reescrita como:
+
+  \[(u_t(t), v) + \kappa(u(t), v) = (f(t), v).\]
+
+\section{Definição da Formulação Fraca}
+
+  \textbf{Definição}: Pelo restante do documento, considere que uma função $g$ é ``suficientemente suave'' se ela respeitar:
+  \begin{itemize}
+    \item $g$ é contínua em todo o domínio;
+    \item $g$ possui derivadas contínuas até a ordem necessária.
+  \end{itemize}
+
+  Seja $H$ um espaço de funções formado por funções $u$ suficientemente suaves que satisfazem $(W)$ e as condições de contorno $u(0,t) = u(1,t) = 0$. Seja $V$ um espaço das funções de teste, composto por funções $v$ suficientemente suaves e que satisfazem as condições de contorno $v(0) = v(1) = 0$.
+
+  Dada uma função $f(x,t) : [0,1] \times [0,T] \to \mathbb{R}$, uma função $u_0 : [0,1] \to \mathbb{R}$ e constantes $\alpha > 0$, $\beta \geq 0$ e $T > 0$, queremos determinar a função $u : [0,1] \times [0,T] \to \mathbb{R}$, $u \in H$, tal que, $\forall v \in V$:
+
+  \begin{center}
+    $(W) = \begin{cases}
+      (u_t(t), v) + \kappa(u(t), v) = (f(t), v)\\ \\
+      u(0,t) = u(1,t) = 0 \\ \\
+      u(x,0) = u_0(x).
+    \end{cases}$
+  \end{center}
+
+
+\section{Problema Totalmente Discreto}
+
+\subsection{Problema Variacional no Ponto Médio}
+
+  Discretizaremos o intervalo $[0,T]$ em $t_0, t_1, ..., t_N$ tal que $t_n - t_{n-1} = \tau$, $\forall n \in [0, N]$. Temos então que:
+
+  \[(u_t(t_{n - \frac{1}{2}}), v) + \kappa(u(t_{n - \frac{1}{2}}), v) = (f(t_{n - \frac{1}{2}}), v)\]
+
+  tal que:
+
+  \[t_{n - \frac{1}{2}} = \dfrac{t_n + t_{n-1}}{2}\]
+
+  é o ponto médio do intervalo $[t_{n-1}, t_n]$.
+
+\subsection{Diferenças Finitas no Tempo}
+
+  Temos que uma possível aproximação para a derivada $u_t$ é \[u_t(t_{n - \frac{1}{2}}) = \dfrac{u(t_n) - u(t_{n-1})}{\tau} + O(\tau^2).\]
+
+  Também temos que uma possível aproximação para $u$ no ponto médio é \[u(t_{n - \frac{1}{2}}) = \dfrac{u(t_n) + u(t_{n-1})}{2} + O(\tau^2).\]
+
+  Substituindo essas aproximações na equação:
+
+  \[\left(\dfrac{u(t_n) - u(t_{n-1})}{\tau}, v\right) + \kappa\left(\dfrac{u(t_n) + u(t_{n-1})}{2}, v\right) \approx (f(t_{n - \frac{1}{2}}), v).\]
+
+  Visto que o sistema agora não é exato --- por conta das parcelas $O(\tau^2)$ que foram desprezadas --- queremos determinar $U^n \in V$ tal que $U^n \approx u(t_n)$ e seja solução da equação:
+
+  \[\left(\dfrac{U^n - U^{n-1}}{\tau}, v\right) + \kappa\left(\dfrac{U^n + U^{n-1}}{2}, v\right) = (f(t_{n - \frac{1}{2}}), v).\]
+
+\subsection{Definição do Problema Totalmente Discreto}
+
+  O método de Galerkin consiste em aproximar o espaço das soluções por um subespaço de dimensão ?nita para encontrarmos uma solução aproximada que satisfaça a formulação fraca do problema dentro de um subespaço apropriado, permitindo a construção de uma solução computacionalmente viável. Sendo assim:
+
+  Seja $H^m$ um espaço de funções finito-dimensional composto por funções $U^h$ suficientemente suaves que satisfazem $(A)$ e as condições de contorno $U^h(0) = U^h(1) = 0$. Analogamente, seja $V^m$ um espaço de funções finito-dimensional das funções de teste, formado por funções $v^h$ suficientemente suaves que também atendem às condições de contorno $v^h(0) = v^h(1) = 0$.
+
+  Precisamos determinar $U_h^n \in H_m$ tal que, $\forall v_h \in V_m$:
+
+  \begin{center}
+    $ (A) = \begin{cases}
+      \left(\dfrac{U_h^n - U_h^{n-1}}{\tau}, v_h\right) + \kappa\left(\dfrac{U_h^n + U_h^{n-1}}{2}, v_h\right) = (f(t_{n - \frac{1}{2}}), v_h) \\ \\
+      U(0,t) = U(1,t) = 0 \\ \\
+      U(x,0) = u_0(x).
+    \end{cases}$
+  \end{center}
+
+\section{Transição entre o Problema Aproximado e a Forma Matriz-vetor}
+
+  Tomando $U_h^n$ como combinação linear das funções da base do espaço $H^m$: $U_h^n(x) = \sum_{j=1}^{m} c_j^n \varphi_j(x)$.
+
+  Veja que o problema $(A)$ é válido para todo $v_h \in V$. Logo, tomando $v_h = \varphi_i$, $\forall i \in \{1,\dots,m\}$:
+
+\begin{align*}
+  \Biggl(\dfrac{\left[\displaystyle\sum_{j=1}^{m} c_j^n - \displaystyle\sum_{j=1}^{m} c_j^{n-1}\right]\varphi_j}{\tau}, \varphi_i\Biggr) + \kappa\Biggl(\dfrac{\left[\displaystyle\sum_{j=1}^{m} c_j^n + \displaystyle\sum_{j=1}^{m} c_j^{n-1}\right]\varphi_j}{2}, \varphi_i\Biggr) &= (f(t_{n - \frac{1}{2}}), \varphi_i)\\
+  \sum_{j=1}^{m}\left[ \left( \dfrac{[c_j^n - c_j^{n-1}] \varphi_j}{\tau}, \varphi_i\right) + \kappa\left( \dfrac{[c_j^n + c_j^{n-1}] \varphi_j}{2}, \varphi_i\right)\right] &= (f(t_{n - \frac{1}{2}}), \varphi_i)\\
+  \sum_{j=1}^{m}\left[ \dfrac{c_j^n - c_j^{n-1}}{\tau} (\varphi_j, \varphi_i) + \dfrac{c_j^n + c_j^{n-1}}{2} \kappa(\varphi_j, \varphi_i) \right] &= (f(t_{n - \frac{1}{2}}), \varphi_i)\\
+\end{align*}
+
+  Como a equação é válida para $\forall i \in \{1,\dots,m\}$, temos que:
+
+  \[\begin{cases}
+    (f(t_{n - \frac{1}{2}}), \varphi_1) = (\varphi_1, \varphi_1)\dfrac{c_1^n - c_1^{n-1}}{\tau}  + \kappa(\varphi_1, \varphi_1)\dfrac{c_1^n + c_1^{n-1}}{2} + \dots + (\varphi_m, \varphi_1)\dfrac{c_m^n - c_m^{n-1}}{\tau}  + \kappa(\varphi_m, \varphi_1)\dfrac{c_m^n + c_m^{n-1}}{2}\\
+    \vdots \\
+    (f(t_{n - \frac{1}{2}}), \varphi_i) = (\varphi_1, \varphi_i)\dfrac{c_1^n - c_1^{n-1}}{\tau}  + \kappa(\varphi_1, \varphi_i)\dfrac{c_1^n + c_1^{n-1}}{2} + \dots + (\varphi_m, \varphi_i)\dfrac{c_m^n - c_m^{n-1}}{\tau}  + \kappa(\varphi_m, \varphi_i)\dfrac{c_m^n + c_m^{n-1}}{2} \\
+    \vdots \\
+    (f(t_{n - \frac{1}{2}}), \varphi_m) = (\varphi_1, \varphi_m)\dfrac{c_1^n - c_1^{n-1}}{\tau}  + \kappa(\varphi_1, \varphi_m)\dfrac{c_1^n + c_1^{n-1}}{2} + \dots
+    + (\varphi_m, \varphi_m)\dfrac{c_m^n - c_m^{n-1}}{\tau}  + \kappa(\varphi_m, \varphi_m)\dfrac{c_m^n + c_m^{n-1}}{2}
+  \end{cases}\]
+
+  Perceba que podemos organizar essas equações em produtos matriz-vetor tal que:
+
+  \[
+    \begin{bmatrix}
+      (\varphi_1, \varphi_1) & ... & (\varphi_m, \varphi_1) \\
+      \vdots & \ddots & \vdots \\
+      (\varphi_1, \varphi_m) & ... & (\varphi_m, \varphi_m)
+    \end{bmatrix} \dfrac{c^n - c^{n-1}}{\tau} +
+    \begin{bmatrix}
+      \kappa(\varphi_1, \varphi_1) & ... & \kappa(\varphi_m, \varphi_1) \\
+      \vdots & \ddots & \vdots \\
+      \kappa(\varphi_1, \varphi_m) & ... & \kappa(\varphi_m, \varphi_m)
+    \end{bmatrix} \dfrac{c^n + c^{n-1}}{2}
+    =
+    \begin{bmatrix}
+      (f(t_{n - \frac{1}{2}}), \varphi_1) \\ \vdots \\ (f(t_{n - \frac{1}{2}}), \varphi_m)
+    \end{bmatrix}
+  \]
+
+  Seja $\displaystyle \mathcal{M} = \begin{bmatrix} (\varphi_1, \varphi_1) & ... & (\varphi_m, \varphi_1) \\ \vdots & \ddots & \vdots \\ (\varphi_1, \varphi_m) & ... & (\varphi_m, \varphi_m) \end{bmatrix}$
+
+  Seja $\displaystyle \mathcal{K} = \begin{bmatrix} \kappa(\varphi_1, \varphi_1) & ... & \kappa(\varphi_m, \varphi_1) \\ \vdots & \ddots & \vdots \\ \kappa(\varphi_1, \varphi_m) & ... & \kappa(\varphi_m, \varphi_m) \end{bmatrix}$
+
+  Seja $\displaystyle \mathcal{F}^{n-\frac{1}{2}} = \begin{bmatrix} (f(t_{n - \frac{1}{2}}), \varphi_1) \\ \vdots \\ (f(t_{n - \frac{1}{2}}), \varphi_m) \end{bmatrix}$
+
+\section{Definição do Problema na Forma Matriz-vetor}
+
+  Dado matrizes $\mathcal{M}$, $\mathcal{K}$ e um vetor $\mathcal{F}^{n-\frac{1}{2}}$, queremos encontrar $C^n$ tal que:
+
+  $(M) = \begin{cases}
+      \mathcal{M} \displaystyle\dfrac{C^n - C^{n-1}}{\tau} + \mathcal{K} \displaystyle\dfrac{C^n + C^{n-1}}{2} = \mathcal{F}^{n - \frac{1}{2}}\\
+      \vphantom{buffer} \\
+      C^0 = \begin{bmatrix}
+      u_0(h) \\
+      \vdots \\
+      u_0(1 - h)
+      \end{bmatrix}
+  \end{cases}$
+
+\section{Solução da Forma Matriz-vetor}
+
+  \begin{align*}
+    \mathcal{M} \dfrac{C^n - C^{n-1}}{\tau} + \mathcal{K} \dfrac{C^n + C^{n-1}}{2} &= \mathcal{F}^{n - \frac{1}{2}}\\
+    \mathcal{M} 2\tau \dfrac{C^n - C^{n-1}}{\tau} + \mathcal{K} 2\tau \dfrac{C^n + C^{n-1}}{2} &= 2\tau \mathcal{F}^{n - \frac{1}{2}}\\
+    \mathcal{M} 2\cancel{\tau} \dfrac{C^n - C^{n-1}}{\cancel{\tau}} + \mathcal{K} \cancel{2}\tau \dfrac{C^n + C^{n-1}}{\cancel{2}} &= 2\tau \mathcal{F}^{n - \frac{1}{2}}\\
+    \mathcal{M} 2 [C^n - C^{n-1}] + \mathcal{K} \tau [C^n + C^{n-1}] &= 2\tau \mathcal{F}^{n - \frac{1}{2}}\\
+    2\mathcal{M}C^n - 2\mathcal{M}C^{n-1} + \tau\mathcal{K}C^n + \tau\mathcal{K}C^{n-1} &= 2\tau \mathcal{F}^{n - \frac{1}{2}}\\
+    2\mathcal{M}C^n + \tau\mathcal{K}C^n &= 2\tau \mathcal{F}^{n - \frac{1}{2}} + 2\mathcal{M}C^{n-1} - \tau\mathcal{K}C^{n-1}\\
+    \left[2\mathcal{M} + \tau\mathcal{K}\right]C^n &= 2\tau \mathcal{F}^{n - \frac{1}{2}} + \left[2\mathcal{M} - \tau\mathcal{K}\right]C^{n-1} \\
+    \left[\mathcal{M} + \left(\dfrac{\tau}{2}\right)\mathcal{K}\right]C^n &= \left(\dfrac{2}{2}\right)\tau \mathcal{F}^{n - \frac{1}{2}} + \left[\mathcal{M} - \left(\dfrac{\tau}{2}\right)\mathcal{K}\right]C^{n-1} \\
+    \left[\mathcal{M} + \left(\dfrac{\tau}{2}\right)\mathcal{K}\right]C^n &= \tau \mathcal{F}^{n - \frac{1}{2}} + \left[\mathcal{M} - \left(\dfrac{\tau}{2}\right)\mathcal{K}\right]C^{n-1}
+  \end{align*}
+
+  Seja $\displaystyle \mathcal{A} = \left[\mathcal{M} + \left(\dfrac{\tau}{2}\right)\mathcal{K}\right]$.
+
+  Seja $\displaystyle \mathcal{B} = \left[\mathcal{M} - \left(\dfrac{\tau}{2}\right)\mathcal{K}\right]$.
+
+  Sendo assim, temos:
+
+  \begin{align*}
+    \mathcal{A} C^n &= \mathcal{B} C^{n-1} + \tau \mathcal{F}^{n - \frac{1}{2}} \\
+    C^n &= \mathcal{A}\text{ }\backslash \text{ }\mathcal{B}C^{n-1} + \tau \mathcal{F}^{n - \frac{1}{2}}
+  \end{align*}
